@@ -1,0 +1,23 @@
+{
+  "name": "makhzan-src",
+  "version": "0.0.1",
+  "description": "a repository and unit of work abstraction",
+  "main": "./dist/index.js",
+  "author": "Mahamed Belkheir",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "build:core": "cd ./packages/core && npm run build"
+  },
+  "devDependencies": {
+    "@makhzan/core": "file:packages/core",
+    "@types/jest": "^28.1.6",
+    "@types/node": "^18.0.6",
+    "jest": "^28.1.3",
+    "ts-jest": "^28.0.7",
+    "typescript": "^4.7.4"
+  },
+  "repository": {
+    "url": "https://github.com/Mahamed-Belkheir/makhzan.git"
+  }
+}

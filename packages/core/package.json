@@ -1,0 +1,21 @@
+{
+    "name": "@makhzan/core",
+    "version": "0.0.1",
+    "description": "a repository and unit of work abstraction",
+    "main": "dist/index.js",
+    "author": "Mahamed Belkheir",
+    "scripts": {
+        "build": "tsc"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "typescript": "^4.7.4"
+    },
+    "files": [
+        "dist/"
+    ],
+    "types": "./dist/index.d.ts",
+    "repository": {
+        "url": "https://github.com/Mahamed-Belkheir/makhzan.git"
+    }
+}
