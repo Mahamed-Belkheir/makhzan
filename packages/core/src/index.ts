@@ -1,20 +1,26 @@
 export type ManagerConfig = {
-    startTrx: (isolation?: string) => any,
+    startTrx: (isolation?: string) => Promise<TransactionObject> | TransactionObject,
     isolations: unknown
 }
 
-type factory<T> = <V>(callback: (r: T) => V | Promise<V>) => V | Promise<V>
+export interface TransactionObject {
+    commit(): Promise<void>
+    rollback(): Promise<void>
+    done(): Promise<boolean>
+}
 
-type TransactionFactory<I, T> = factory<T> & {
+export type factory<T> = <V>(callback: (r: T) => Promise<V>) => Promise<V>
+
+export type TransactionFactory<I, T> = factory<T> & {
     [k in keyof I]: factory<T>
 }
 
-type TrxCallback = <T>(repos: any) => T
+export type TrxCallback = <T>(repos: any) => T
 
-type Class = abstract new (...args: any) => any
+export type RepositoryClass = abstract new (trx: any) => any
 
 interface ManagerBuilder<Isolations = {}, Repos = {}> {
-    addRepository: <Key extends PropertyKey, Value extends Class>(
+    addRepository: <Key extends PropertyKey, Value extends RepositoryClass>(
       key: Key,
       value: Value
     ) => ManagerBuilder<Isolations, Repos & { [K in Key]: () => InstanceType<Value> }>;
@@ -38,7 +44,18 @@ export const Manager = <T extends ManagerConfig>(db: T): ManagerBuilder<T['isola
                         return () => new target[key](trx)
                     }
                 })
-                return callback(p)
+                try {
+                    let result = await callback(p)
+                    if (!await trx.done()) {
+                        await trx.commit()
+                    }
+                    return result;
+                } catch(e) {
+                    if (!await trx.done()) {
+                        await trx.rollback()
+                    }
+                    throw e;
+                }
             }
             let trx = (callback: TrxCallback) => TrxFac(callback)
             if (typeof db.isolations == "object") {

@@ -17,7 +17,19 @@ const Manager = (db) => {
                         return () => new target[key](trx);
                     }
                 });
-                return callback(p);
+                try {
+                    let result = await callback(p);
+                    if (!await trx.done()) {
+                        await trx.commit();
+                    }
+                    return result;
+                }
+                catch (e) {
+                    if (!await trx.done()) {
+                        await trx.rollback();
+                    }
+                    throw e;
+                }
             };
             let trx = (callback) => TrxFac(callback);
             if (typeof db.isolations == "object") {

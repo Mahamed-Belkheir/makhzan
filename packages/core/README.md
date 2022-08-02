@@ -19,12 +19,35 @@ let startTrx = (isolation?: string) => {
         let q = "BEGIN" 
         if (isolation === "serializable")
             q += " TRANSACTION ISOLATION LEVEL SERIALIZABLE";
-        return DBConn.query(q);
+        return {
+            async commit() {
+                await q.commit()
+            },
+            async rollback() {
+                await q.rollback();
+            },
+            async done() {
+                await q.isComplete();
+            },
+            trx: q,
+        };
 }
 
 // example using knex
 let startTrx = (isolationLevel?: string) => {
-        return knex.transaction({ isolationLevel });
+        let q = knex.transaction({ isolationLevel });
+        return {
+            async commit() {
+                await q.commit()
+            },
+            async rollback() {
+                await q.rollback();
+            },
+            async done() {
+                await q.isComplete();
+            },
+            trx: q,
+        };
 }
 
 let UoW = Manager({
@@ -54,6 +77,8 @@ The manager builds a Unit of Work function, it requires the following:
 
 # Usage
 
+For a real example, check the knex test in the main github repository.
+
 The generated UoW instance is a function that takes a callback, with its parameter being the repositories you've
 registered while setting it up, they'll be available as function calls as they're instantiated on demand and injected with the
 current transaction reference.
@@ -64,6 +89,9 @@ let newBalance = await UoW(async r => {
     let user = await r.users().findById(userId);
     let account = await r.accounts().findByAccountNumber(user.accountNo);
     account.deduct(200, "new service subscription");
+    if (account.balance <= 0) {
+        throw new Error("insufficient balance");
+    }
     await r.accounts().save(account);
     return account.currentBalance();
 })
