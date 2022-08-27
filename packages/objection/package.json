@@ -1,0 +1,25 @@
+{
+    "name": "@makhzan/objection",
+    "version": "0.0.1",
+    "description": "generic repository implementation using objection.js",
+    "main": "dist/index.js",
+    "author": "Mahamed Belkheir",
+    "scripts": {
+        "build": "tsc"
+    },
+    "license": "MIT",
+    "devDependencies": {
+        "typescript": "^4.7.4"
+    },
+    "files": [
+        "dist/"
+    ],
+    "types": "./dist/index.d.ts",
+    "repository": {
+        "url": "https://github.com/Mahamed-Belkheir/makhzan.git"
+    },
+    "peerDependencies": {
+        "knex": "^2.2.0",
+        "objection": "^3.0.1"
+    }
+}
