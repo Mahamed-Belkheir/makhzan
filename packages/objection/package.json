@@ -1,6 +1,6 @@
 {
     "name": "@makhzan/objection",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "generic repository implementation using objection.js",
     "main": "dist/index.js",
     "author": "Mahamed Belkheir",

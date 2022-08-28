@@ -22,8 +22,7 @@ class BaseRepository {
         return q;
     }
     async insert(data) {
-        console.log("inserting:", data);
-        return this.q().insert(data).debug().then(this.mapResult);
+        return this.q().insert(data).then(this.mapResult);
     }
     async insertMany(data) {
         return Promise.all(data.map(d => this.insert(d)));
@@ -35,7 +34,7 @@ class BaseRepository {
         return this.matchQuery(match).first().then(this.mapResult);
     }
     async update(data, match) {
-        return this.matchQuery(match).debug().update(data);
+        return this.matchQuery(match).update(data);
     }
     async updateAndFetch(data, match) {
         await this.update(data, match);

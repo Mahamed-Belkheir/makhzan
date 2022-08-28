@@ -6,7 +6,6 @@ import { Purchase, User } from "../domain/entity";
 export class UserRepository extends BaseRepository<User> {
     protected modelClass: ModelClass<Model> = UserObjectionModel
     protected mapResult = (data: any) => {
-        console.log({data})
         if (!data) return undefined;
         if (Array.isArray(data)) {
             return data.map(d => {
@@ -27,7 +26,7 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     public fetchWithPurchases(match: Partial<User> | Partial<User>[]) {
-        return this.matchQuery(match).withGraphJoined('[purchases]').debug().then(this.mapResult) as Promise<Required<User>[]>;
+        return this.matchQuery(match).withGraphJoined('[purchases]').then(this.mapResult) as Promise<Required<User>[]>;
     }
 }
 

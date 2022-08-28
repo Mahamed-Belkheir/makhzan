@@ -35,8 +35,7 @@ export abstract class BaseRepository<T> {
     }
 
     public async insert(data: T) {
-        console.log("inserting:", data)
-        return this.q().insert(data).debug().then(this.mapResult) as Promise<T>; 
+        return this.q().insert(data).then(this.mapResult) as Promise<T>; 
     }
 
     public async insertMany(data: T[]) {
@@ -50,7 +49,7 @@ export abstract class BaseRepository<T> {
         return this.matchQuery(match).first().then(this.mapResult) as Promise<T | undefined>;
     }
     public async update(data: Partial<T>, match?: MatchQuery<T>) {
-        return this.matchQuery(match).debug().update(data);
+        return this.matchQuery(match).update(data);
     }
     public async updateAndFetch(data: Partial<T>, match?: MatchQuery<T>) {
         await this.update(data, match);
